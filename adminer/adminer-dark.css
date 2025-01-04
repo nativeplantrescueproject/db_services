@@ -25,6 +25,11 @@ body {
 * {
 	outline-color: #7962f2;
 }
+
+.jush {
+	color: #1fea0e;
+}
+
 ::selection {
 	background: #4ca0ea;
 	color: #fff
@@ -910,8 +915,8 @@ textarea {
     color: #fff;
 }
 code {
-	filter: sepia() invert();
-	color: #000000;
+	/*filter: sepia() invert();*/
+	color: #1fea0e;
 }
 #content legend a {
     color: #7962f2;
@@ -923,7 +928,7 @@ code {
 	background: #221f2e;
 }
 .sqlarea.jush-sql.jush {
-	filter: sepia() invert();
+	/*filter: sepia() invert();*/
 	background: transparent;
 	box-shadow: none;
 	border: 2px solid rgba(0,0,0,0.1) !important;

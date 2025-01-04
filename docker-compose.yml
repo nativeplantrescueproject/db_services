@@ -1,22 +1,19 @@
 
 services:
 
-  redis:
-    image: redis
-    container_name: redis
-    ports:
-      - "6379:6379"
-
-  db:
-    container_name: db
+  pgdbdev:
+    container_name: pgdbdev
     image: postgres:17
     shm_size: 128mb
     healthcheck:
-      test: [ "CMD", 'pg_isready', '-q', '-d', 'postgres', '-U', '${POSTGRES_USER}']
+      test: [ "CMD", 'pg_isready', '-q', '-d', 'postgres', '-U', '${POSTGRES_USER}' ]
       timeout: 45s
       interval: 10s
       retries: 10
     restart: always
+    network_mode: host
+    profiles:
+      - dev
     environment:
       APP_DB_USER: ${APP_DB_USER}
       APP_DB_PASS: ${APP_DB_PASS}
@@ -32,20 +29,85 @@ services:
     ports:
       - "${POSTGRES_PORT}:5432"
 
-  adminer:
-    container_name: adminer
+  pgdbprod:
+    container_name: pgdbprod
+    image: postgres:17
+    shm_size: 128mb
+    healthcheck:
+      test: [ "CMD", 'pg_isready', '-q', '-d', 'postgres', '-U', '${POSTGRES_USER}']
+      timeout: 45s
+      interval: 10s
+      retries: 10
+    restart: always
+    networks:
+      - nprp_net
+    profiles:
+      - prod
+    environment:
+      APP_DB_USER: ${APP_DB_USER}
+      APP_DB_PASS: ${APP_DB_PASS}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      PGDATA: ${PGDATA}
+      TZ: 'America/Chicago'
+    volumes:
+      - ./psql/db:/var/lib/postgresql/data/pgdata
+      - ./psql/init.sh:/docker-entrypoint-initdb.d/init-user-db.sh
+      - ./psql/pg_hba.conf:/etc/postgresql/pg_hba.conf
+#    ports:
+#      - "${POSTGRES_PORT}:5432"
+
+  adminerprod:
+    container_name: adminerprod
     image: adminer:latest
     restart: always
-    ports:
-      - "8080:8080"
+#    ports:
+#      - "8080:8080"
     depends_on:
-      - db
+      - pgdbprod
+    profiles:
+      - prod
     environment:
       TZ: America/Chicago
     volumes:
       - ./adminer/adminer-dark.css:/var/www/html/adminer.css
 
+  adminerdev:
+    container_name: adminerdev
+    image: adminer:latest
+    restart: always
+    ports:
+      - "8080:8080"
+    network_mode: host
+    depends_on:
+      - pgdbdev
+    profiles:
+      - dev
+    environment:
+      TZ: America/Chicago
+    volumes:
+      - ./adminer/adminer-dark.css:/var/www/html/adminer.css
+
+  dozzle:
+    image: amir20/dozzle:latest
+    container_name: dozzle
+    restart: unless-stopped
+    environment:
+      DOZZLE_LEVEL: info
+      DOZZLE_TAILSIZE: 500
+      DOZZLE_FILTER: "status=running"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock # disable when using socket proxy
+
 networks:
   default:
+    # This just means we're connecting to an externally (in ref to this compose file) made network.
+    #   It may still be an internal network
+    external: true
+    name: nprp_net
+  nprp_net:
+    # This just means we're connecting to an externally (in ref to this compose file) made network.
+    #   It may still be an internal network
     external: true
     name: nprp_net
