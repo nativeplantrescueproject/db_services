@@ -21,6 +21,8 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
       PGDATA: ${PGDATA}
+      RO_DB_USER: ${RO_DB_USER}
+      RO_DB_PASS: ${RO_DB_PASS}
       TZ: 'America/Chicago'
     volumes:
       - ./psql/db:/var/lib/postgresql/data/pgdata
@@ -50,6 +52,8 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
       PGDATA: ${PGDATA}
+      RO_DB_USER: ${RO_DB_USER}
+      RO_DB_PASS: ${RO_DB_PASS}
       TZ: 'America/Chicago'
     volumes:
       - ./psql/db:/var/lib/postgresql/data/pgdata
