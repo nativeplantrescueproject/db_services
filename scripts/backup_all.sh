@@ -8,5 +8,6 @@ if [ -d "${BACKUP_DIR}" ]; then
 else
   exit 1
 fi
+
 #echo "${BACKUP_DIR}/dump_`date +%Y%m%d_%H%M%S`.sql.gz"
-docker exec -t pgdbprod pg_dumpall -c -U postgres | gzip > "${BACKUP_DIR}/dump_`date +%Y%m%d_%H%M%S`.sql.gz"
+docker exec -t pgdbprod pg_dumpall -c -U postgres | gzip > "${BACKUP_DIR}/all/dump_all_`date +%Y%m%d_%H%M%S`.sql.gz"
