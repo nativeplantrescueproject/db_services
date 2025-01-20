@@ -26,8 +26,8 @@ services:
       - ./psql/db:/var/lib/postgresql/data/pgdata
       - ./psql/init.sh:/docker-entrypoint-initdb.d/init-user-db.sh
       - ./psql/pg_hba.conf:/etc/postgresql/pg_hba.conf
-    ports:
-      - "${POSTGRES_PORT}:5432"
+#    ports:
+#      - "${POSTGRES_PORT}:5432"
 
   pgdbprod:
     container_name: pgdbprod
@@ -73,32 +73,33 @@ services:
     volumes:
       - ./adminer/adminer-dark.css:/var/www/html/adminer.css
 
-  adminerdev:
-    container_name: adminerdev
-    image: adminer:latest
-    restart: always
-    ports:
-      - "8080:8080"
-    network_mode: host
-    depends_on:
-      - pgdbdev
-    profiles:
-      - dev
-    environment:
-      TZ: America/Chicago
-    volumes:
-      - ./adminer/adminer-dark.css:/var/www/html/adminer.css
+# This is only ever turned on to make CSS improvements
+#  adminerdev:
+#    container_name: adminerdev
+#    image: adminer:latest
+#    restart: always
+#    ports:
+#      - "8080:8080"
+#    network_mode: host
+#    depends_on:
+#      - pgdbdev
+#    profiles:
+#      - dev
+#    environment:
+#      TZ: America/Chicago
+#    volumes:
+#      - ./adminer/adminer-dark.css:/var/www/html/adminer.css
 
-  dozzle:
-    image: amir20/dozzle:latest
-    container_name: dozzle
-    restart: unless-stopped
-    environment:
-      DOZZLE_LEVEL: info
-      DOZZLE_TAILSIZE: 500
-      DOZZLE_FILTER: "status=running"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock # disable when using socket proxy
+#  dozzle:
+#    image: amir20/dozzle:latest
+#    container_name: dozzle
+#    restart: unless-stopped
+#    environment:
+#      DOZZLE_LEVEL: info
+#      DOZZLE_TAILSIZE: 500
+#      DOZZLE_FILTER: "status=running"
+#    volumes:
+#      - /var/run/docker.sock:/var/run/docker.sock # disable when using socket proxy
 
 networks:
   default:
