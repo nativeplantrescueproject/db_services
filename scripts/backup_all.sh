@@ -6,6 +6,7 @@ BACKUP_DIR="$(dirname ${SCRIPT_DIR})/backups"
 if [ -d "${BACKUP_DIR}" ]; then
   echo "${BACKUP_DIR} does exist."
 else
+  echo "${BACKUP_DIR} does not exist."
   exit 1
 fi
 
